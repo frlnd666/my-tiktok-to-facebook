@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import './index.css';
 
 function App() {
   const [tiktokUrl, setTiktokUrl] = useState('');
@@ -16,8 +17,8 @@ function App() {
       videoElement.controls = true;
       document.body.appendChild(videoElement);
 
-      // Simpan file video untuk diunggah ke Facebook
-      const videoPath = `temp_video.mp4`;
+      // Simpan file video untuk diunggah ke Facebook Reels
+      const videoPath = 'temp_video.mp4';
       const writer = fs.createWriteStream(videoPath);
       writer.write(Buffer.from(await response.data.arrayBuffer()));
       writer.end();
