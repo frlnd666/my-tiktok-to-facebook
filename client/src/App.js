@@ -17,12 +17,9 @@ function App() {
       videoElement.controls = true;
       document.body.appendChild(videoElement);
 
-      // Simpan file video untuk diunggah ke Facebook Reels
-      const videoPath = 'temp_video.mp4';
-      const writer = fs.createWriteStream(videoPath);
-      writer.write(Buffer.from(await response.data.arrayBuffer()));
-      writer.end();
-      setVideoFile(videoPath);
+      // Simpan file video menggunakan FileReader dan FormData
+      const file = new File([videoBlob], 'temp_video.mp4', { type: 'video/mp4' });
+      setVideoFile(file);
     } catch (error) {
       console.error('Error downloading video:', error);
     }
@@ -34,8 +31,16 @@ function App() {
       return;
     }
 
+    const formData = new FormData();
+    formData.append('file', videoFile);
+    formData.append('caption', caption);
+
     try {
-      const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/facebook/upload`, { videoPath, caption });
+      const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/facebook/upload`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
       alert('Video uploaded successfully:', response.data);
     } catch (error) {
       console.error('Error uploading video to Facebook:', error);
